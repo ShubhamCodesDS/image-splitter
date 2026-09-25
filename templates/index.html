@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Collage Splitter & Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #07090e;
+            --bg-card: #0d1322;
+            --border-color: #1e293b;
+            --accent-purple: #8b5cf6;
+            --accent-glow: rgba(139, 92, 246, 0.3);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background-color: var(--bg-main); 
+            color: var(--text-main); 
+            padding: 50px 20px; 
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 0%, #1a103c 0%, transparent 50%);
+        }
+
+        .container { 
+            max-width: 1100px; 
+            margin: 0 auto; 
+            background: var(--bg-card); 
+            padding: 40px; 
+            border-radius: 20px; 
+            border: 1px solid var(--border-color); 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .header { text-align: center; margin-bottom: 25px; }
+
+        h1 { 
+            font-size: 28px; 
+            font-weight: 700; 
+            background: linear-gradient(135deg, #c084fc, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px; 
+        }
+
+        p.subtitle { color: var(--text-muted); font-size: 14px; }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-muted); }
+
+        select {
+            width: 100%;
+            background: #090d16;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .dropzone { 
+            border: 2px dashed #334155; 
+            border-radius: 14px; 
+            padding: 30px 20px; 
+            text-align: center; 
+            cursor: pointer; 
+            background: #090d16; 
+            transition: all 0.3s ease;
+            margin-bottom: 24px; 
+        }
+
+        .dropzone:hover { border-color: var(--accent-purple); background: #0f172a; }
+
+        .action-btn { 
+            width: 100%; 
+            background: linear-gradient(135deg, #7c3aed, #9333ea); 
+            color: white; 
+            border: none; 
+            padding: 16px; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            font-size: 16px; 
+            transition: transform 0.2s;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .action-btn:hover { transform: translateY(-2px); }
+
+        .results { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px; 
+            margin-top: 35px; 
+        }
+
+        .result-card { 
+            background: #090d16; 
+            padding: 16px; 
+            border-radius: 14px; 
+            border: 1px solid var(--border-color); 
+            text-align: center; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .img-container {
+            width: 100%;
+            height: 240px;
+            background: #030712;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+            overflow: hidden;
+            padding: 5px;
+        }
+
+        .result-card img { 
+            max-width: 100%; 
+            max-height: 100%; 
+            object-fit: contain; 
+            border-radius: 6px; 
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+
+        .card-title { font-weight: 600; margin-bottom: 12px; font-size: 14px; color: #e2e8f0; }
+
+        .download-btn { 
+            display: inline-block; 
+            background: #1e1b4b; 
+            color: #c084fc; 
+            border: 1px solid #4c1d95;
+            padding: 10px 16px; 
+            border-radius: 8px; 
+            text-decoration: none; 
+            font-size: 13px; 
+            font-weight: 600; 
+            transition: all 0.2s;
+        }
+
+        .download-btn:hover { background: #7c3aed; color: white; }
+        .loader-text { grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 30px; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>✂️ Pro Collage Splitter & Downloader</h1>
+        <p class="subtitle">Select layout type, upload your collage, and get lossless individual poses instantly.</p>
+    </div>
+    
+    <div class="form-group">
+        <label>Select Collage Layout Type:</label>
+        <select id="layoutSelect">
+            <option value="layout_5">5-Pose Layout (4 Left Grid + 1 Close-Up Right)</option>
+            <option value="layout_4">2x2 Grid Layout (4 Equal Poses)</option>
+            <option value="layout_6">3x2 Grid Layout (6 Poses)</option>
+        </select>
+    </div>
+
+    <div class="dropzone" onclick="document.getElementById('fileInput').click()">
+        <p id="uploadText" style="color: var(--text-muted); font-size: 14px; font-weight: 500;">📁 Click here or drag & drop your collage image</p>
+        <input type="file" id="fileInput" accept="image/*" style="display:none;" onchange="handleFile(this)">
+    </div>
+
+    <button class="action-btn" onclick="splitImage()">⚡ Split & Separate Poses</button>
+    
+    <div class="results" id="resultsGrid"></div>
+</div>
+
+<script>
+    let selectedFile = null;
+
+    function handleFile(input) {
+        if (input.files && input.files[0]) {
+            selectedFile = input.files[0];
+            document.getElementById('uploadText').innerHTML = `✅ Selected File: <b style="color:#c084fc;">${selectedFile.name}</b>`;
+        }
+    }
+
+    async function splitImage() {
+        if (!selectedFile) {
+            alert('Pehle ek collage photo select karein!');
+            return;
+        }
+
+        const layoutType = document.getElementById('layoutSelect').value;
+        const formData = new FormData();
+        formData.append('image', selectedFile);
+        formData.append('layout', layoutType);
+
+        const resultsGrid = document.getElementById('resultsGrid');
+        resultsGrid.innerHTML = '<div class="loader-text">✨ Processing image layout... Please wait.</div>';
+
+        try {
+            const response = await fetch('/split-image', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                resultsGrid.innerHTML = '';
+                for (const [title, url] of Object.entries(data.images)) {
+                    resultsGrid.innerHTML += `
+                        <div class="result-card">
+                            <div class="img-container">
+                                <img src="${url}" alt="${title}">
+                            </div>
+                            <div class="card-title">${title}</div>
+                            <a href="${url}" class="download-btn" download>📥 Download HD Pose</a>
+                        </div>
+                    `;
+                }
+            } else {
+                alert(data.message || 'Splitting failed');
+                resultsGrid.innerHTML = '';
+            }
+        } catch (err) {
+            alert('Server connection error.');
+            resultsGrid.innerHTML = '';
+        }
+    }
+</script>
+</body>
+</html>
