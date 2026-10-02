@@ -71,6 +71,39 @@ def split_image():
                         (j + 1) * col_w - margin, 
                         (i + 1) * row_h - margin
                     )
+        elif layout == 'layout_7': # 7-Pose: 6 Grid Left (3 cols x 2 rows) + 1 Big Close-Up Right
+            half_w = width // 2
+            left_col_w = half_w // 3
+            row_h = height // 2
+            # 6 grid poses on the left side
+            for i in range(2):
+                for j in range(3):
+                    pos_name = f"Left Grid Row {i+1} Col {j+1}"
+                    custom_crops[pos_name] = (
+                        j * left_col_w + margin,
+                        i * row_h + margin,
+                        (j + 1) * left_col_w - margin,
+                        (i + 1) * row_h - margin
+                    )
+            # 1 big close-up view covering the entire right half
+            custom_crops["Close-Up View (Right Side)"] = (
+                half_w + margin,
+                margin,
+                width - margin,
+                height - margin
+            )
+        elif layout == 'layout_8': # 8-Pose: 4x2 Equal Grid (4 columns x 2 rows)
+            col_w = width // 4
+            row_h = height // 2
+            for i in range(2):
+                for j in range(4):
+                    pos_name = f"Pose Row {i+1} Col {j+1}"
+                    custom_crops[pos_name] = (
+                        j * col_w + margin,
+                        i * row_h + margin,
+                        (j + 1) * col_w - margin,
+                        (i + 1) * row_h - margin
+                    )
 
         output_files = {}
         base_name = os.path.splitext(filename)[0]
