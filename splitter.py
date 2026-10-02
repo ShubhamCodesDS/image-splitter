@@ -75,7 +75,6 @@ def split_image():
             half_w = width // 2
             left_col_w = half_w // 3
             row_h = height // 2
-            # 6 grid poses on the left side
             for i in range(2):
                 for j in range(3):
                     pos_name = f"Left Grid Row {i+1} Col {j+1}"
@@ -85,7 +84,6 @@ def split_image():
                         (j + 1) * left_col_w - margin,
                         (i + 1) * row_h - margin
                     )
-            # 1 big close-up view covering the entire right half
             custom_crops["Close-Up View (Right Side)"] = (
                 half_w + margin,
                 margin,
@@ -97,6 +95,18 @@ def split_image():
             row_h = height // 2
             for i in range(2):
                 for j in range(4):
+                    pos_name = f"Pose Row {i+1} Col {j+1}"
+                    custom_crops[pos_name] = (
+                        j * col_w + margin,
+                        i * row_h + margin,
+                        (j + 1) * col_w - margin,
+                        (i + 1) * row_h - margin
+                    )
+        elif layout == 'layout_9': # 9-Pose: 3x3 Equal Grid (3 columns x 3 rows)
+            col_w = width // 3
+            row_h = height // 3
+            for i in range(3):
+                for j in range(3):
                     pos_name = f"Pose Row {i+1} Col {j+1}"
                     custom_crops[pos_name] = (
                         j * col_w + margin,
